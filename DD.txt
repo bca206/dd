@@ -1,0 +1,99 @@
+create table person(
+driver_id varchar2(20) primary key,
+d_name varchar2(20),
+address varchar2(100)
+);
+
+create table car(
+reg_no varchar2(20) primary key,
+model varchar2(20),
+year int
+);
+
+create table accident(
+report_number int primary key,
+r_date date,
+location varchar2(40)
+);
+
+create table owns(
+driver_id varchar2(20),
+reg_no varchar2(20),
+foreign key (driver_id) references person (driver_id),
+foreign key (reg_no) references car (reg_no)
+);
+
+create table participated(
+driver_id varchar2(20),
+reg_no varchar2(20),
+report_number int,
+damage_amount int,
+foreign key (driver_id) references person (driver_id),
+foreign key (reg_no) references car (reg_no),
+foreign key (report_number) references accident (report_number)
+);
+
+insert into person values('d1','kaif','banglore');
+insert into person values('d2','rahul','goa');
+insert into person values('d3','mudasir','manglore');
+insert into person values('d4','ruvaid','manglore');
+insert into person values('d5','raid','bhatkal');
+
+insert into car values('ka-47-01','thar',2020);
+insert into car values('ka-47-02','omani',2000);
+insert into car values('ka-47-03','swift',2023);
+insert into car values('ka-47-04','Ford',2002);
+insert into car values('ka-47-05','Tesla ',2024);
+
+insert into accident values(1,'12-dec-2023','sagar');
+insert into accident values(2,'31-dec-2021','mumbai');
+insert into accident values(3,'12-jan-2024','karwar');
+insert into accident values(4,'17-dec-2002','banglore');
+insert into accident values(5,'15-feb-2023','udupi');
+
+insert into owns values('d1','ka-47-01');
+insert into owns values('d2','ka-47-02');
+insert into owns values('d3','ka-47-03');
+insert into owns values('d4','ka-47-04');
+insert into owns values('d5','ka-47-05');
+
+insert into participated values('d1','ka-47-01',1,10000);
+insert into participated values('d2','ka-47-02',2,10200);
+insert into participated values('d3','ka-47-03',3,20000);
+insert into participated values('d4','ka-47-04',4,9000);
+insert into participated values('d5','ka-47-05',5,90000);
+
+update participated set damage_amount=25000
+     where(reg_no='ka-47-03' and report_number between 1 and 3);
+
+insert into accident values(6,'21-feb-2023','bhatkal');
+
+
+SELECT COUNT(driver_id)
+       FROM accident, participated
+       WHERE r_date BETWEEN '01-JAN-2023' AND '21-DEC-2023'
+       AND accident.report_number = participated.report_number;
+
+SELECT COUNT(car.model)
+     FROM accident, participated, car
+      WHERE accident.report_number = participated.report_number
+        AND car.reg_no = participated.reg_no
+        AND car.model='omani';
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+BEGIN
+    DECLARE
+        num NUMBER := 10; 
+        a NUMBER := 0;  
+        result NUMBER;     
+
+    BEGIN
+        -- Attempt division
+        result := num / a;
+        DBMS_OUTPUT.PUT_LINE('Result: ' || result);
+    EXCEPTION
+        WHEN ZERO_DIVIDE THEN
+            DBMS_OUTPUT.PUT_LINE('Error: Division by zero occurred.');
+    END;
+END;
+/
